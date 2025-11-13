@@ -132,7 +132,7 @@
         }
 
         updateCards();
-        setInterval(updateCards, 500);
+        setInterval(updateCards, 1000);
 
         // ====== INISIALISASI CHART ======
         const ctx = document.getElementById("sensorChart").getContext("2d");

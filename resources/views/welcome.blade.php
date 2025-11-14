@@ -139,36 +139,36 @@
         const sensorChart = new Chart(ctx, {
             type: "line",
             data: {
-            labels: [],
-            datasets: [
-                {
-                label: "Temperature (°C)",
-                borderColor: "rgba(239,68,68,1)",
-                backgroundColor: "rgba(239,68,68,0.2)",
-                data: [],
-                tension: 0.3,
-                fill: true,
-                },
-                {
-                label: "Humidity (%)",
-                borderColor: "rgba(56,189,248,1)",
-                backgroundColor: "rgba(56,189,248,0.2)",
-                data: [],
-                tension: 0.3,
-                fill: true, 
-                },
-            ],
+              labels: [],
+              datasets: [
+                  {
+                    label: "Temperature (°C)",
+                    borderColor: "rgba(239,68,68,1)",
+                    backgroundColor: "rgba(239,68,68,0.2)",
+                    data: [],
+                    tension: 0.3,
+                    fill: true,
+                  },
+                  {
+                    label: "Humidity (%)",
+                    borderColor: "rgba(56,189,248,1)",
+                    backgroundColor: "rgba(56,189,248,0.2)",
+                    data: [],
+                    tension: 0.3,
+                    fill: true, 
+                  },
+              ],
             },
             options: {
             responsive: true,
             scales: {
                 x: {
-                ticks: { color: "#9ca3af" },
-                grid: { color: "rgba(255,255,255,0.05)" },
+                    ticks: { color: "#9ca3af" },
+                    grid: { color: "rgba(255,255,255,0.05)" },
                 },
                 y: {
-                ticks: { color: "#9ca3af" },
-                grid: { color: "rgba(255,255,255,0.05)" },
+                    ticks: { color: "#9ca3af" },
+                    grid: { color: "rgba(255,255,255,0.05)" },
                 },
             },
             plugins: {
@@ -189,8 +189,8 @@
               sensorChart.data.datasets[1].data.push(data.humidity ?? 0);
 
               if (sensorChart.data.labels.length > 15) {
-                  sensorChart.data.labels.shift();
-                  sensorChart.data.datasets.forEach((ds) => ds.data.shift());
+                sensorChart.data.labels.shift();
+                sensorChart.data.datasets.forEach((ds) => ds.data.shift());
               }
 
               sensorChart.update();

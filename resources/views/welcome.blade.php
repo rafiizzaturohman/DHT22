@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <title>AIRIQ – DHT22 Sensor Monitoring</title>
 
     <!-- Icon & Tailwind -->
@@ -30,7 +31,7 @@
         class="flex-1 flex flex-col md:flex-row gap-6 justify-center items-stretch p-6 max-w-6xl mx-auto w-full"
       >
         <!-- Temperature Card -->
-        <div class="w-full md:w-1/2 bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 text-center shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_14px_35px_rgba(239,68,68,0.25)] hover:scale-[1.02] transition-all duration-300 h-44 md:h-48 flex flex-col justify-center">
+        <div class="w-full md:w-1/2 bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 text-center shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_14px_25px_rgba(239,68,68,0.25)] hover:scale-[1.02] transition-all duration-300 h-44 md:h-48 flex flex-col justify-center">
           <div class="flex flex-col items-center space-y-2">
             <i class="bi bi-thermometer-half text-4xl text-red-400"></i>
 
@@ -49,9 +50,9 @@
         </div>
 
         <!-- Humidity Card -->
-        <div class="w-full md:w-1/2 bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 text-center shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_14px_35px_rgba(56,189,248,0.25)] hover:scale-[1.02] transition-all duration-300 h-44 md:h-48 flex flex-col justify-center">
+        <div class="w-full md:w-1/2 bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 text-center shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_14px_25px_rgba(56,189,248,0.25)] hover:scale-[1.02] transition-all duration-300 h-44 md:h-48 flex flex-col justify-center">
           <div class="flex flex-col items-center space-y-2">
-            <i class="bi bi-droplet text-4xl text-sky-400"></i>
+            <i class="bi bi-droplet text-4xl text-sky-500"></i>
 
             <h2 class="text-base font-semibold tracking-wide text-gray-300">
               Humidity
@@ -69,7 +70,7 @@
       </main>
 
       <!-- Chart Section -->
-      <section class="max-w-6xl mx-auto w-11/12 h-auto md:w-full md:h-auto bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-lg p-6 mt-4 mb-6 hover:scale-[1.02] transition-transform duration-300">
+      <section class="max-w-6xl mx-auto w-11/12 h-auto md:w-full md:h-auto bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_14px_25px_rgba(249,248,246,0.5)] p-6 mt-4 mb-6 hover:scale-[1.02] transition-all duration-300">
         <h2 class="text-center text-lg font-semibold tracking-wide text-gray-300 mb-4">
           Real-time Sensor Chart
         </h2>
@@ -99,32 +100,25 @@
               document.getElementById("humidity").innerText =
                   data.humidity ?? "--";
               
+              const setNotif = (el, text, color) => {
+                el.innerText = text;
+                el.className = `mt-3 text-xs sm:text-sm md:text-base font-medium text-${color}-300 bg-${color}-900/40 border border-${color}-700/40 px-3 sm:px-4 py-1 sm:py-2 rounded-lg shadow-md transition-all duration-300 text-center`.trim();
+              }
+
               if (data.temperature > 30) {
-                tempNotif.innerText = "⚠️ Suhu udara terlalu panas";
-                tempNotif.className =
-                  "mt-3 text-xs sm:text-sm md:text-base font-medium text-red-300 bg-red-900/40 border border-red-700/40 px-3 sm:px-4 py-1 sm:py-2 rounded-lg shadow-md transition-all duration-300 text-center";
+                setNotif(tempNotif, "⚠️ Suhu udara terlalu panas", "red");
               } else if (data.temperature < 24) {
-                tempNotif.innerText = "❄️ Suhu udara terlalu dingin";
-                tempNotif.className =
-                  "mt-3 text-xs sm:text-sm md:text-base font-medium text-blue-300 bg-blue-900/40 border border-blue-700/40 px-3 sm:px-4 py-1 sm:py-2 rounded-lg shadow-md transition-all duration-300 text-center";
+                setNotif(tempNotif, "❄️ Suhu udara terlalu dingin", "blue");
               } else {
-                tempNotif.innerText = "😊 Suhu udara normal";
-                tempNotif.className =
-                  "mt-3 text-xs sm:text-sm md:text-base font-medium text-green-300 bg-green-900/30 border border-green-700/30 px-3 sm:px-4 py-1 sm:py-2 rounded-lg shadow-md transition-all duration-300 text-center";
+                setNotif(tempNotif, "😊 Suhu udara normal", "green");
               }
 
               if (data.humidity > 65) {
-                humiNotif.innerText = "⚠️ Kelembapan melebihi batas normal";
-                humiNotif.className =
-                  "mt-3 text-xs sm:text-sm md:text-base font-medium text-yellow-300 bg-yellow-900/40 border border-yellow-700/40 px-3 sm:px-4 py-1 sm:py-2 rounded-lg shadow-md transition-all duration-300 text-center";
+                 setNotif(humiNotif, "⚠️ Kelembapan diatas batas normal", "red");
               } else if (data.humidity < 30) {
-                humiNotif.innerText = "⚠️ Kelembapan di bawah batas normal";
-                humiNotif.className =
-                  "mt-3 text-xs sm:text-sm md:text-base font-medium text-blue-300 bg-blue-900/40 border border-blue-700/40 px-3 sm:px-4 py-1 sm:py-2 rounded-lg shadow-md transition-all duration-300 text-center";
+                setNotif(humiNotif, "⚠️ Kelembapan dibawah batas normal", "blue");
               } else {
-                humiNotif.innerText = "😊 Kelembapan normal";
-                humiNotif.className =
-                  "mt-3 text-xs sm:text-sm md:text-base font-medium text-green-300 bg-green-900/30 border border-green-700/30 px-3 sm:px-4 py-1 sm:py-2 rounded-lg shadow-md transition-all duration-300 text-center";
+                setNotif(humiNotif, "😊 Kelembapan normal", "green");
               }
             } catch (err) {
               console.error("❌ Gagal mengambil data untuk card:", err);

@@ -160,20 +160,20 @@
               ],
             },
             options: {
-            responsive: true,
-            scales: {
-                x: {
-                    ticks: { color: "#9ca3af" },
-                    grid: { color: "rgba(255,255,255,0.05)" },
-                },
-                y: {
-                    ticks: { color: "#9ca3af" },
-                    grid: { color: "rgba(255,255,255,0.05)" },
-                },
-            },
-            plugins: {
-                legend: { labels: { color: "#f3f4f6" } },
-            },
+              responsive: true,
+              scales: {
+                  x: {
+                      ticks: { color: "#9ca3af" },
+                      grid: { color: "rgba(255,255,255,0.05)" },
+                  },
+                  y: {
+                      ticks: { color: "#9ca3af" },
+                      grid: { color: "rgba(255,255,255,0.05)" },
+                  },
+              },
+              plugins: {
+                  legend: { labels: { color: "#f3f4f6" } },
+              },
             },
         });
 

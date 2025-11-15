@@ -105,17 +105,17 @@
                 el.className = `mt-3 text-xs sm:text-sm md:text-base font-medium text-${color}-300 bg-${color}-900/40 border border-${color}-700/40 px-3 sm:px-4 py-1 sm:py-2 rounded-lg shadow-md transition-all duration-300 text-center`.trim();
               }
 
-              if (data.temperature > 30) {
+              if (data.temperature >= 30) {
                 setNotif(tempNotif, "⚠️ Suhu udara terlalu panas", "red");
-              } else if (data.temperature < 24) {
+              } else if (data.temperature <= 21) {
                 setNotif(tempNotif, "❄️ Suhu udara terlalu dingin", "blue");
               } else {
                 setNotif(tempNotif, "😊 Suhu udara normal", "green");
               }
 
-              if (data.humidity > 65) {
+              if (data.humidity >= 65) {
                  setNotif(humiNotif, "⚠️ Kelembapan diatas batas normal", "red");
-              } else if (data.humidity < 30) {
+              } else if (data.humidity <= 30) {
                 setNotif(humiNotif, "⚠️ Kelembapan dibawah batas normal", "blue");
               } else {
                 setNotif(humiNotif, "😊 Kelembapan normal", "green");

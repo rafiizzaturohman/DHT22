@@ -4,8 +4,13 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
-const char* ssid = "izzat";
-const char* password = "satuduadelapan";
+#include <string>
+
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
+
+const char* ssid = "SIB BLOK E3 NO 14";
+const char* password = "3783140504Okay";
 
 #define DHTPIN D3
 #define DHTTYPE DHT22
@@ -17,6 +22,9 @@ uint32_t delayMS;
 void setup() {
   Serial.begin(115200);
   delay(1000);
+
+  lcd.init(); 
+  lcd.backlight();
 
   Serial.println();
   Serial.print("Menghubungkan ke WiFi: ");
@@ -42,6 +50,9 @@ void setup() {
   delayMS = sensor.min_delay / 1000;
 }
 
+unsigned long lastUpdate = 0;
+const unsigned long interval = 3000;
+
 void loop() {
   delay(delayMS);
   sensors_event_t event;
@@ -65,12 +76,38 @@ void loop() {
   Serial.print("Humidity: ");
   Serial.print(humidity);
   Serial.println("%");
+  
+  if (millis() - lastUpdate >= interval) {
+    lastUpdate = millis();
+
+    lcd.clear();
+
+    // ---- Suhu ----
+    lcd.setCursor(0, 0);
+    if (temperature >= 30.0) {
+      lcd.print("Suhu Panas");
+    } else if (temperature <= 21.0) {
+      lcd.print("Suhu Dingin");
+    } else {
+      lcd.print("Suhu Normal");
+    }
+
+    // ---- Kelembapan ----
+    lcd.setCursor(0, 1);
+    if (humidity >= 60.0) {
+        lcd.print("Terlalu Lembap");
+    } else if (humidity <= 40.0) {
+        lcd.print("Kurang Lembap");
+    } else {
+        lcd.print("Normal");
+    }
+  }
 
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     WiFiClient client;
-
-    String url = "http://172.27.54.11/dhtiot/public/update-data/"; // URL Server
+// 172.27.54.11
+    String url = "http://192.168.1.10/dhtiot/public/update-data/"; // URL Server
     url += String(temperature, 1) + "/" + String(humidity, 1); // URL = URL + temperatur + / + humidity 
     // http://172.27.54.11/dhtiot/public/update-data/{temperature}/{humidity}
 

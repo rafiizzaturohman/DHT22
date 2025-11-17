@@ -104,7 +104,8 @@ void loop() {
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     WiFiClient client;
-// 172.27.54.11
+    
+    // 172.27.54.11
     String url = "http://192.168.1.10/dhtiot/public/update-data/"; // URL Server
     url += String(temperature, 1) + "/" + String(humidity, 1); // URL = URL + temperatur + / + humidity 
     // http://172.27.54.11/dhtiot/public/update-data/{temperature}/{humidity}

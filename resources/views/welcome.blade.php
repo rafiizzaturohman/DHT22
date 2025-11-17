@@ -53,7 +53,7 @@
         <div class="w-full md:w-1/2 bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 text-center shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_14px_25px_rgba(56,189,248,0.25)] hover:scale-[1.02] transition-all duration-300 h-44 md:h-48 flex flex-col justify-center">
           <div class="flex flex-col items-center space-y-2">
             <i class="bi bi-droplet text-4xl text-sky-500"></i>
-            
+
             <h2 class="text-base font-semibold tracking-wide text-gray-300">
               Humidity
             </h2>
@@ -199,12 +199,13 @@
         // ====== CHART LABELS DELETE (2 labels setiap 60 detik) ======
         setInterval(() => {
             const removeCount = 2; 
+
             if (sensorChart.data.labels.length > removeCount) {
-            sensorChart.data.labels.splice(0, removeCount);
-            sensorChart.data.datasets.forEach((ds) =>
+              sensorChart.data.labels.splice(0, removeCount);
+              sensorChart.data.datasets.forEach((ds) =>
                 ds.data.splice(0, removeCount)
-            );
-            sensorChart.update();
+              );
+              sensorChart.update();
             }
         }, 60000); 
     </script>

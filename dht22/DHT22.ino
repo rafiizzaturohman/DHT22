@@ -7,8 +7,8 @@
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
-const char* ssid = "SIB BLOK E3 NO 14";
-const char* password = "3783140504Okay";
+const char* ssid = "smpqinthara";
+const char* password = "100%qinthara";
 
 #define DHTPIN D3
 #define DHTTYPE DHT22
@@ -106,7 +106,7 @@ void loop() {
     WiFiClient client;
     
     // 172.27.54.11
-    String url = "http://192.168.1.10/dhtiot/public/update-data/"; // URL Server
+    String url = "http://192.168.18.232/dhtiot/update-data/"; // URL Server
     url += String(temperature, 1) + "/" + String(humidity, 1); // URL = URL + temperatur + / + humidity 
     // http://172.27.54.11/dhtiot/public/update-data/{temperature}/{humidity}
 

@@ -163,34 +163,54 @@ void loop() {
 
     if (WiFi.status() == WL_CONNECTED) {
       WiFiClient client;
-      HTTPClient http;
+      HTTPClient http1;
+      HTTPClient http2;
 
       String url = "http://192.168.1.10/dhtiot/public/update-data/";
       url += String(temperature, 1) + "/" + String(humidity, 1);
 
       String url2 = "http://192.168.1.10:3002/sensor/update/";
-      url2 += String(temperature, 1) + "/" + String(humidity, 1);
-      
-      http.begin(client, url);
-      http.begin(client, url2);
-      int httpCode = http.GET();
+      url2 += String(temperature, 1) + "/" + String(humidity, 1);\
+
+      // -----------------------------
+      // API 1
+      // -----------------------------
+      http1.begin(client, url);
+      int httpCode1 = http1.GET();
 
       Serial.print("Mengirim data ke "); 
       Serial.println(url);
-      Serial.print("dan ke ");
+
+      if (httpCode1 > 0) {
+        Serial.printf("HTTP Response Code: %d\n", httpCode1); 
+        // Print ini + code yang nandain sukses atau nggak (200 = sukses) 
+        String payload1 = http1.getString(); // Ngambil respons dari httpCode 
+        Serial.println("Response: "); 
+        Serial.println(payload1);
+      } else {
+        Serial.printf("Gagal mengirim data ke API 1. Error: %s\n", http1.errorToString(httpCode1).c_str());
+      }
+      http1.end();
+
+      // -----------------------------
+      // API 2
+      // -----------------------------
+      http2.begin(client, url2);
+      int httpCode2 = http2.GET();
+
+      Serial.print("Mengirim data ke "); 
       Serial.println(url2);
 
-      if (httpCode > 0) {
-        Serial.printf("HTTP Response Code: %d\n", httpCode); 
+      if (httpCode2 > 0) {
+        Serial.printf("HTTP Response Code: %d\n", httpCode2); 
         // Print ini + code yang nandain sukses atau nggak (200 = sukses) 
-        String payload = http.getString(); // Ngambil respons dari httpCode 
+        String payload2 = http2.getString(); // Ngambil respons dari httpCode 
         Serial.println("Response: "); 
-        Serial.println(payload);
+        Serial.println(payload2);
       } else {
-        Serial.printf("Gagal mengirim data. Error: %s\n", http.errorToString(httpCode).c_str());
+        Serial.printf("Gagal mengirim data ke API 1. Error: %s\n", http2.errorToString(httpCode2).c_str());
       }
-
-      http.end();
+      http2.end();
     }
   }
 }

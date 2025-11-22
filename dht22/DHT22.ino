@@ -3,133 +3,194 @@
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
-
 #include <LiquidCrystal_I2C.h>
-LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
-const char* ssid = "smpqinthara";
-const char* password = "100%qinthara";
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+
+const char* ssid = "SIB BLOK E3 NO 14";
+const char* password = "3783140504Okay";
 
 #define DHTPIN D3
 #define DHTTYPE DHT22
+#define LED_PIN_1 D5
+#define BUZZER_PIN D6
 
 DHT_Unified dht(DHTPIN, DHTTYPE);
 
-uint32_t delayMS;
+float temperature = 0.0;
+float humidity = 0.0;
+
+// TIMER
+unsigned long lastDHT = 0;
+unsigned long dhtInterval = 3000;
+
+unsigned long lastUpdate = 0;
+unsigned long lcdInterval = 3000;
+
+unsigned long lastSend = 0;
+unsigned long sendInterval = 3000;
+
+unsigned long lastBlink = 0;
+unsigned long blinkInterval = 0;
+
+unsigned long lastBeep = 0;
+unsigned long beepInterval = 0;
+
+bool ledState = LOW;
+bool buzzerState = LOW;
 
 void setup() {
   Serial.begin(115200);
-  delay(1000);
-
-  lcd.init(); 
+  lcd.init();
   lcd.backlight();
 
-  Serial.println();
-  Serial.print("Menghubungkan ke WiFi: ");
   WiFi.begin(ssid, password);
+  Serial.print("Connecting");
 
   while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+    delay(300);
     Serial.print(".");
   }
 
-  Serial.println();
-  Serial.println("WiFi Terhubung");
-  Serial.print("IP Address: ");
+  Serial.println("\nWiFi Connected");
   Serial.println(WiFi.localIP());
 
+  pinMode(LED_PIN_1, OUTPUT);
+  pinMode(BUZZER_PIN, OUTPUT);
+
   dht.begin();
-  Serial.println(F("DHT22 Unified Sensor Example"));
-  sensor_t sensor;
-
-  dht.temperature().getSensor(&sensor);
-  dht.humidity().getSensor(&sensor);
-
-  delayMS = sensor.min_delay / 1000;
 }
 
-unsigned long lastUpdate = 0;
-const unsigned long interval = 3000;
-
 void loop() {
-  delay(delayMS);
-  sensors_event_t event;
+  unsigned long now = millis();
 
-  // Membaca temperature & humidity
-  dht.temperature().getEvent(&event);
-  float temperature = event.temperature;
+  if (now - lastDHT >= dhtInterval) {
+    lastDHT = now;
 
-  dht.humidity().getEvent(&event);
-  float humidity = event.relative_humidity;
+    sensors_event_t event;
+    dht.temperature().getEvent(&event);
+    temperature = event.temperature;
 
-  if (isnan(temperature) || isnan(humidity)) {
-    Serial.println("Gagal baca sensor DHT");
-    return;
+    dht.humidity().getEvent(&event);
+    humidity = event.relative_humidity;
+
+    if (isnan(temperature) || isnan(humidity)) {
+      Serial.println("Undetected DHT");
+    } else {
+      Serial.print("Temperatrure: "); 
+      Serial.print(temperature); 
+      Serial.println("°C"); 
+
+      Serial.print("Humidity: "); 
+      Serial.print(humidity); 
+      Serial.println("%");
+    }
   }
 
-  Serial.print("Temperatrure: ");
-  Serial.print(temperature);
-  Serial.println("°C");
+  if (temperature >= 30.0) {
+    blinkInterval = 150;
+    // beepInterval  = 150;
+  } 
+  else if (temperature <= 21.0) {
+    blinkInterval = 300;
+    // beepInterval  = 300;
+  } 
+  else {
+    blinkInterval = 0;
+    // beepInterval = 0;
+    digitalWrite(LED_PIN_1, HIGH);
+    // digitalWrite(BUZZER_PIN, LOW);
+  }
 
-  Serial.print("Humidity: ");
-  Serial.print(humidity);
-  Serial.println("%");
-  
-  if (millis() - lastUpdate >= interval) {
-    lastUpdate = millis();
+  if ((temperature >= 30.0 && humidity >= 90) || (temperature <= 30.0 && humidity <= 60)) {
+    beepInterval = 50;
+  } else if ((temperature <= 30.0 && humidity >= 90) || (temperature >= 30.0 && humidity <= 60)) {
+    beepInterval = 100;
+  } else {
+    beepInterval = 0;
+    digitalWrite(BUZZER_PIN, LOW);
+  }
+
+  // if (humidity >= 60.0) {
+  //   blinkInterval = 150;
+  //   beepInterval  = 150;
+  // } 
+  // else if (humidity <= 45.0) {
+  //   blinkInterval = 300;
+  //   beepInterval  = 300;
+  // } 
+  // else {
+  //   blinkInterval = 0;
+  //   beepInterval = 0;
+  //   digitalWrite(LED_PIN_1, LOW);
+  //   digitalWrite(BUZZER_PIN, LOW);
+  // }
+
+  if (blinkInterval > 0 && (now - lastBlink >= blinkInterval)) {
+    lastBlink = now;
+    ledState = !ledState;
+    digitalWrite(LED_PIN_1, ledState);
+  }
+
+  if (beepInterval > 0 && (now - lastBeep >= beepInterval)) {
+    lastBeep = now;
+    buzzerState = !buzzerState;
+    digitalWrite(BUZZER_PIN, buzzerState);
+  }
+
+  if (now - lastUpdate >= lcdInterval) {
+    lastUpdate = now;
 
     lcd.clear();
 
-    // ---- Suhu ----
-    lcd.setCursor(0, 0);
-    if (temperature >= 30.0) {
-      lcd.print("Suhu Panas");
-    } else if (temperature <= 21.0) {
-      lcd.print("Suhu Dingin");
-    } else {
-      lcd.print("Suhu Normal");
-    }
+    if (!isnan(temperature) && !isnan(humidity)) {
+      lcd.setCursor(0, 0);
+      lcd.print(temperature, 1);
+      lcd.print((char)223);
+      lcd.print("C");
 
-    // ---- Kelembapan ----
-    lcd.setCursor(0, 1);
-    if (humidity >= 60.0) {
-        lcd.print("Terlalu Lembap");
-    } else if (humidity <= 40.0) {
-        lcd.print("Kurang Lembap");
+      lcd.setCursor(0, 1);
+      lcd.print(humidity, 1);
+      lcd.print("%");
     } else {
-        lcd.print("Normal");
+      lcd.setCursor(0, 0);
+      lcd.print("Undetected DHT");
     }
   }
 
-  if (WiFi.status() == WL_CONNECTED) {
-    HTTPClient http;
-    WiFiClient client;
-    
-    // 172.27.54.11
-    String url = "http://192.168.18.232/dhtiot/update-data/"; // URL Server
-    url += String(temperature, 1) + "/" + String(humidity, 1); // URL = URL + temperatur + / + humidity 
-    // http://172.27.54.11/dhtiot/public/update-data/{temperature}/{humidity}
+  if (now - lastSend >= sendInterval) {
+    lastSend = now;
 
-    Serial.print("Mengirim data ke ");
-    Serial.println(url);
+    if (WiFi.status() == WL_CONNECTED) {
+      WiFiClient client;
+      HTTPClient http;
 
-    http.begin(client, url); // fungsi untuk memulai koneksi HTTP klien
-    int httpCode = http.GET(); // metode HTTP untuk meminta data dari server, yang berfungsi dengan mengambil data tanpa mengubahnya
+      String url = "http://192.168.1.10/dhtiot/public/update-data/";
+      url += String(temperature, 1) + "/" + String(humidity, 1);
 
-    if (httpCode > 0) { // Kalau ada httpCode nya
-      Serial.printf("HTTP Response Code: %d\n", httpCode); // Print ini + code yang nandain sukses atau nggak (200 = sukses)
-      String payload = http.getString(); // Ngambil respons dari httpCode 
-      Serial.println("Response: ");
-      Serial.println(payload);
-    } else {
-      Serial.printf("Gagal mengirim data. Error: %s\n", http.errorToString(httpCode).c_str());
+      String url2 = "http://192.168.1.10:3002/sensor/update/";
+      url2 += String(temperature, 1) + "/" + String(humidity, 1);
+      
+      http.begin(client, url);
+      http.begin(client, url2);
+      int httpCode = http.GET();
+
+      Serial.print("Mengirim data ke "); 
+      Serial.println(url);
+      Serial.print("dan ke ");
+      Serial.println(url2);
+
+      if (httpCode > 0) {
+        Serial.printf("HTTP Response Code: %d\n", httpCode); 
+        // Print ini + code yang nandain sukses atau nggak (200 = sukses) 
+        String payload = http.getString(); // Ngambil respons dari httpCode 
+        Serial.println("Response: "); 
+        Serial.println(payload);
+      } else {
+        Serial.printf("Gagal mengirim data. Error: %s\n", http.errorToString(httpCode).c_str());
+      }
+
+      http.end();
     }
-
-    http.end();
-  } else {
-    Serial.println("WiFi tidak terhubung");
-    WiFi.reconnect();
   }
-
-  delay(3000);
 }

@@ -28,7 +28,7 @@
 
       <!-- Card Section -->
       <main
-        class="flex-1 flex flex-col md:flex-row gap-6 justify-center items-stretch p-6 max-w-6xl mx-auto w-full"
+        class="flex-1 flex flex-col md:flex-row gap-6 justify-center items-stretch p-6 md:max-w-300 mx-auto w-full"
       >
         <!-- Temperature Card -->
         <div class="w-full md:w-1/2 bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 text-center shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_14px_25px_rgba(239,68,68,0.25)] hover:scale-[1.02] transition-all duration-300 h-44 md:h-48 flex flex-col justify-center">

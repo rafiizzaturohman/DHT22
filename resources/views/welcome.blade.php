@@ -69,6 +69,30 @@
         </div>
       </main>
 
+      <section id="input-form">
+        <h2>Max TempHumi Form</h2>
+
+        <div>
+          <form action="update-nmax" method="POST" >
+            @csrf
+            <div class="form-group">
+              <p class="form-label">Nilai Maksimum</p>
+              <select name="jenis_nilai" id="jenis_nilai" class="bg-white text-black">
+                <option value="">Pilih Nilai</option>
+                <option value="max_temperature">Max Temperature</option>
+                <option value="max_humidity">Max Humidity</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <labeL class="form-label">Nilai</labeL>
+              <input type="number" name="nilai" id="nilai">
+            </div>
+            <button type="submit" class="btn btn-primary">Simpan Nilai</button>
+          </form>
+        </div>
+      </section>
+
       <!-- Chart Section -->
       <section class="max-w-6xl mx-auto w-11/12 h-auto md:w-full md:h-auto bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_10px_25px_rgba(249,248,246,0.5)] p-6 mt-4 mb-6 hover:scale-[1.02] transition-all duration-300">
         <h2 class="text-center text-lg font-semibold tracking-wide text-gray-300 mb-4">

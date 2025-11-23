@@ -9,3 +9,4 @@ Route::get('/', function () {
 
 Route::get('/update-data/{tmp}/{hmd}', [Dht22Controller::class, 'updateData']);
 Route::get('/get-data', [Dht22Controller::class, 'getData']);
+Route::post('/update-nmax', [Dht22Controller::class, 'updateNilaiMaksimal']);

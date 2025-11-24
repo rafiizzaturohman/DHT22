@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>AIRIQ – DHT22 Sensor Monitoring</title>
+    <title>TempDity – DHT22 Sensor Monitoring</title>
 
     <!-- Icon & Tailwind -->
     <link
@@ -13,6 +13,21 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
+    <style>
+      /* Hilangkan spinner di Chrome, Edge, Opera */
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+      }
+
+      /* Hilangkan spinner di Firefox */
+      input[type="number"] {
+          -moz-appearance: textfield;
+      }
+    </style>
+
+    {{-- @vite('resources/css/app.css') --}}
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
@@ -21,7 +36,7 @@
     <div class="text-white max-h-screen flex flex-col">
       <!-- Header -->
       <header class="bg-white/10 backdrop-blur-md shadow-md py-4 text-center border-b border-white/10">
-        <h1 class="text-3xl font-bold tracking-widest text-[#1E90FF] text-shadow-sm text-shadow-[#00bfff80] font-sans">AIRIQ</h1>
+        <h1 class="text-3xl font-semibold tracking-widest text-[#1E90FF] text-shadow-sm text-shadow-[#00bfff80] font-sans">TempDity</h1>
         
         <p class="text-sm text-gray-300 mt-1">DHT22 Sensor Monitoring</p>
       </header>
@@ -69,29 +84,62 @@
         </div>
       </main>
 
-      <section id="input-form">
-        <h2>Max TempHumi Form</h2>
+      <section id="input-form" class="max-w-6xl mx-auto w-11/12 md:w-full bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_10px_25px_rgba(249,248,246,0.2)] p-6 mt-4 mb-6 hover:scale-[1.02] transition-all duration-300">
+        <h2 class="text-2xl text-center font-semibold tracking-wide text-gray-300 mb-6 flex items-center justify-center gap-2">
+          <i class="bi bi-thermometer-half text-4xl text-red-400"></i>
+          Batas TempDity
+          <i class="bi bi-droplet text-4xl text-sky-500"></i>
+        </h2>
 
-        <div>
-          <form action="update-nmax" method="POST" >
+        <div class="grid grid-cols-none md:grid-cols-2 gap-8">
+          <form action="update-nmin" method="POST" class="space-y-4">
             @csrf
-            <div class="form-group">
-              <p class="form-label">Nilai Maksimum</p>
-              <select name="jenis_nilai" id="jenis_nilai" class="bg-white text-black">
-                <option value="">Pilih Nilai</option>
-                <option value="max_temperature">Max Temperature</option>
-                <option value="max_humidity">Max Humidity</option>
-              </select>
+            <div class="flex flex-col gap-4">
+              <div class="relative flex-1">
+                <label for="jenis_nilai" class="text-gray-300 text-base mb-1 block">Nilai Minimum</label>
+                <select name="jenis_nilai" id="jenis_nilai" class="w-full px-4 py-2 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                  <option value="" disabled selected>Pilih Nilai</option>
+                  <option value="min_temperature">Min Temperature</option>
+                  <option value="min_humidity">Min Humidity</option>
+                </select>
+              </div>
+  
+              <div class="flex-1">
+                <label for="nilai" class="text-gray-300 text-base mb-1 block">Nilai</label>
+                <input type="number" name="nilai" id="nilai" step="0.1" class="w-full px-4 py-2 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-400" required>
+              </div>
             </div>
-            
-            <div class="form-group">
-              <labeL class="form-label">Nilai</labeL>
-              <input type="number" name="nilai" id="nilai">
+  
+            <div class="text-center">
+              <button type="submit" class="mt-2 px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors duration-200 cursor-pointer">Simpan Nilai</button>
             </div>
-            <button type="submit" class="btn btn-primary">Simpan Nilai</button>
+          </form>
+
+          <form action="update-nmax" method="POST" class="space-y-4">
+            @csrf
+            <div class="flex flex-col gap-4">
+              <div class="relative flex-1">
+                <label for="jenis_nilai" class="text-gray-300 text-base mb-1 block">Nilai Maksimum</label>
+                <select name="jenis_nilai" id="jenis_nilai" class="w-full px-4 py-2 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                  <option value="" disabled selected>Pilih Nilai</option>
+                  <option value="max_temperature">Max Temperature</option>
+                  <option value="max_humidity">Max Humidity</option>
+                </select>
+              </div>
+  
+              <div class="flex-1">
+                <label for="nilai" class="text-gray-300 text-base mb-1 block">Nilai</label>
+                <input type="number" name="nilai" id="nilai" step="0.1" class="w-full px-4 py-2 rounded-lg bg-gray-900 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-red-400" required>
+              </div>
+            </div>
+  
+            <div class="text-center">
+              <button type="submit" class="mt-2 px-6 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors duration-200 cursor-pointer">Simpan Nilai</button>
+            </div>
           </form>
         </div>
       </section>
+
 
       <!-- Chart Section -->
       <section class="max-w-6xl mx-auto w-11/12 h-auto md:w-full md:h-auto bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_10px_25px_rgba(249,248,246,0.5)] p-6 mt-4 mb-6 hover:scale-[1.02] transition-all duration-300">
@@ -104,7 +152,7 @@
 
       <!-- Footer -->
       <footer class="text-center md:absolute md:bottom-0 md:left-1/2 md:-translate-x-1/2 py-3 text-gray-500 text-xs md:text-sm">
-        <p>© 2025 AIRIQ | Real-time DHT22 Sensor Data</p>
+        <p>© 2025 TempDity | Real-time DHT22 Sensor Data</p>
       </footer>
     </div>
 

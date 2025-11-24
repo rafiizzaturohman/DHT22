@@ -8,8 +8,8 @@
 
 LiquidCrystal_I2C lcd(0x27, 20, 4);
 
-const char* ssid = "gudangkopi.tki";
-const char* password = "orderdulu";
+const char* ssid = "SIB BLOK E3 NO 14";
+const char* password = "3783140504Okay";
 
 #define DHTPIN D3
 #define DHTTYPE DHT22
@@ -84,69 +84,15 @@ void loop() {
     if (isnan(temperature) || isnan(humidity)) {
       Serial.println("Undetected DHT");
     } else {
-      // Serial.print("Temperature: "); 
-      // Serial.print(temperature); 
-      // Serial.println("°C"); 
+      Serial.print("Temperature: "); 
+      Serial.print(temperature); 
+      Serial.println("°C"); 
 
-      // Serial.print("Humidity: "); 
-      // Serial.print(humidity); 
-      // Serial.println("%");
+      Serial.print("Humidity: "); 
+      Serial.print(humidity); 
+      Serial.println("%");
     }
   }
-
-  if (temperature >= 30.0) {
-    blinkInterval = 150;
-    // beepInterval  = 150;
-  } 
-  else if (temperature <= 21.0) {
-    blinkInterval = 300;
-    // beepInterval  = 300;
-  } 
-  else {
-    blinkInterval = 0;
-    // beepInterval = 0;
-    digitalWrite(LED_PIN_1, ledState);
-    // digitalWrite(BUZZER_PIN, LOW);
-  }
-
-  if (humidity >= 60.0) {
-    blinkInterval2 = 150;
-    // beepInterval  = 150;
-  } 
-  else if (humidity <= 40.0) {
-    blinkInterval2 = 300;
-    // beepInterval  = 300;
-  } 
-  else {
-    blinkInterval2 = 0;
-    // beepInterval = 0;
-    digitalWrite(LED_PIN_2, ledState2);
-    // digitalWrite(BUZZER_PIN, LOW);
-  }
-
-  // if ((temperature >= 30.0 && humidity >= 90) || (temperature <= 30.0 && humidity <= 60)) {
-  //   beepInterval = 50;
-  // } else if ((temperature <= 30.0 && humidity >= 90) || (temperature >= 30.0 && humidity <= 60)) {
-  //   beepInterval = 100;
-  // } else {
-  //   beepInterval = 0;
-  //   digitalWrite(BUZZER_PIN, LOW);
-  // }
-
-  // if (humidity >= 60.0) {
-  //   blinkInterval = 150;
-  //   beepInterval  = 150;
-  // } 
-  // else if (humidity <= 45.0) {
-  //   blinkInterval = 300;
-  //   beepInterval  = 300;
-  // } 
-  // else {
-  //   blinkInterval = 0;
-  //   beepInterval = 0;
-  //   digitalWrite(LED_PIN_1, LOW);
-  //   digitalWrite(BUZZER_PIN, LOW);
-  // }
 
   if (blinkInterval > 0 && (now - lastBlink >= blinkInterval)) {
     lastBlink = now;
@@ -155,7 +101,7 @@ void loop() {
   }
 
   if (blinkInterval2 > 0 && (now - lastBlink2 >= blinkInterval2)) {
-    lastBlink = now;
+    lastBlink2 = now;
     ledState2 = !ledState2;
     digitalWrite(LED_PIN_2, ledState2);
   }
@@ -196,10 +142,10 @@ void loop() {
       HTTPClient http1;
       HTTPClient http2;
 
-      String url = "http://192.168.1.109/dhtiot/public/update-data/";
+      String url = "http://192.168.1.10/dhtiot/public/update-data/";
       url += String(temperature, 1) + "/" + String(humidity, 1);
 
-      String url2 = "http://192.168.1.109:3002/sensor/update/";
+      String url2 = "http://192.168.1.10:3002/sensor/update/";
       url2 += String(temperature, 1) + "/" + String(humidity, 1);\
 
       // -----------------------------
@@ -215,7 +161,7 @@ void loop() {
         Serial.printf("HTTP Response Code: %d\n", httpCode1); 
         // Print ini + code yang nandain sukses atau nggak (200 = sukses) 
         String payload1 = http1.getString(); // Ngambil respons dari httpCode 
-        Serial.println(payload1);
+        // Serial.println(payload1);
 
         StaticJsonDocument<255> doc;
         DeserializationError error = deserializeJson(doc, payload1);
@@ -241,22 +187,34 @@ void loop() {
         const char* updatedAt = data["updated_at"];
         float maxTempVal = data["max_temperature"].as<float>();
         float maxHumVal = data["max_humidity"].as<float>();
+        float minTempVal = data["min_temperature"].as<float>();
+        float minHumVal = data["min_humidity"].as<float>();
 
-        Serial.println("Ini hasilnya");
-        Serial.print("ID : ");
-        Serial.println(id);
-        Serial.print("Temperature : ");
-        Serial.println(tempVal);
-        Serial.print("Humidity : ");
-        Serial.println(humVal);
-        Serial.print("max temp  : ");
-        Serial.println(maxTempVal);
-        Serial.print("max hum : ");
-        Serial.println(maxHumVal);
-        Serial.print("Created At : ");
-        Serial.println(createdAt);
-        Serial.print("Updated At : ");
-        Serial.println(updatedAt);
+        if (tempVal > maxTempVal) {
+          blinkInterval = 150;
+          beepInterval = 150;
+        } else if (tempVal < minTempVal) {
+          blinkInterval = 300;
+          beepInterval = 300;
+        } else {
+          blinkInterval = 0;
+          beepInterval = 0;
+          digitalWrite(LED_PIN_1, LOW);
+          digitalWrite(BUZZER_PIN, LOW);
+        }
+
+        if (humVal > maxHumVal) {
+          blinkInterval2 = 150;
+          beepInterval = 150;
+        } else if (humVal > minHumVal) {
+          blinkInterval2 = 300;
+          beepInterval = 300;
+        } else {
+          blinkInterval2 = 0;
+          beepInterval = 0;
+          digitalWrite(LED_PIN_2, LOW);
+          digitalWrite(BUZZER_PIN, LOW);
+        }
       } else {
         Serial.printf("Gagal mengirim data ke API 1. Error: %s\n", http1.errorToString(httpCode1).c_str());
       }
@@ -298,17 +256,6 @@ void loop() {
       //   const char* createdAt = doc["created_at"];
       //   const char* updatedAt = doc["updated_at"];
 
-      //   Serial.println("Ini hasilnya");
-      //   Serial.print("ID = ");
-      //   Serial.println(id);
-      //   Serial.print("Temperature : ");
-      //   Serial.println(tempVal);
-      //   Serial.print("Humidity : ");
-      //   Serial.println(humVal);
-      //   Serial.print("Created At : ");
-      //   Serial.println(createdAt);
-      //   Serial.print("Updated At : ");
-      //   Serial.println(updatedAt);
       // } else {
       //   Serial.printf("Gagal mengirim data ke API 2. Error: %s\n", http2.errorToString(httpCode2).c_str());
       // }

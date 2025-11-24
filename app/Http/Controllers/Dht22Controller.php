@@ -35,7 +35,6 @@ class Dht22Controller extends Controller
     }
 
     public function updateNilaiMaksimal(Request $request){
-        //tambahkan validasi nilai
         $nilai = $request->nilai;
         $jenisNilai = $request->jenis_nilai;
         $dht = Dht22::first();
@@ -45,6 +44,26 @@ class Dht22Controller extends Controller
             $dht->save();
         } else if ($jenisNilai == 'max_humidity'){
             $dht->max_humidity = $nilai;
+            $dht->save();
+        } else {
+            return response()->json([
+                'error' => 'Gagal upload data',
+            ]);
+        }
+
+        return redirect()->to('/');
+    }
+
+    public function updateNilaiMinimal(Request $request){
+        $nilai = $request->nilai;
+        $jenisNilai = $request->jenis_nilai;
+        $dht = Dht22::first();
+        
+        if ($jenisNilai == 'min_temperature'){
+            $dht->min_temperature = $nilai;
+            $dht->save();
+        } else if ($jenisNilai == 'min_humidity'){
+            $dht->min_humidity = $nilai;
             $dht->save();
         } else {
             return response()->json([

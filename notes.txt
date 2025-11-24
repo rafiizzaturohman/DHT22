@@ -1,0 +1,72 @@
+if (temperature >= 30.0) {
+    blinkInterval = 150;
+    // beepInterval  = 150;
+  } 
+  else if (temperature <= 21.0) {
+    blinkInterval = 300;
+    // beepInterval  = 300;
+  } 
+  else {
+    blinkInterval = 0;
+    // beepInterval = 0;
+    digitalWrite(LED_PIN_1, ledState);
+    // digitalWrite(BUZZER_PIN, LOW);
+  }
+
+  if (humidity >= 60.0) {
+    blinkInterval2 = 150;
+    // beepInterval  = 150;
+  } 
+  else if (humidity <= 40.0) {
+    blinkInterval2 = 300;
+    // beepInterval  = 300;
+  } 
+  else {
+    blinkInterval2 = 0;
+    // beepInterval = 0;
+    digitalWrite(LED_PIN_2, ledState2);
+    // digitalWrite(BUZZER_PIN, LOW);
+  }
+
+  // if ((temperature >= 30.0 && humidity >= 90) || (temperature <= 30.0 && humidity <= 60)) {
+  //   beepInterval = 50;
+  // } else if ((temperature <= 30.0 && humidity >= 90) || (temperature >= 30.0 && humidity <= 60)) {
+  //   beepInterval = 100;
+  // } else {
+  //   beepInterval = 0;
+  //   digitalWrite(BUZZER_PIN, LOW);
+  // }
+
+  // if (humidity >= 60.0) {
+  //   blinkInterval = 150;
+  //   beepInterval  = 150;
+  // } 
+  // else if (humidity <= 45.0) {
+  //   blinkInterval = 300;
+  //   beepInterval  = 300;
+  // } 
+  // else {
+  //   blinkInterval = 0;
+  //   beepInterval = 0;
+  //   digitalWrite(LED_PIN_1, LOW);
+  //   digitalWrite(BUZZER_PIN, LOW);
+  // }
+
+
+
+
+  // Serial.println("Ini hasilnya");
+        // Serial.print("ID : ");
+        // Serial.println(id);
+        // Serial.print("Temperature : ");
+        // Serial.println(tempVal);
+        // Serial.print("Humidity : ");
+        // Serial.println(humVal);
+        // Serial.print("max temp  : ");
+        // Serial.println(maxTempVal);
+        // Serial.print("max hum : ");
+        // Serial.println(maxHumVal);
+        // Serial.print("Created At : ");
+        // Serial.println(createdAt);
+        // Serial.print("Updated At : ");
+        // Serial.println(updatedAt);

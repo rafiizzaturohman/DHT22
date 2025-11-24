@@ -27,7 +27,6 @@
       }
     </style>
 
-    {{-- @vite('resources/css/app.css') --}}
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
@@ -83,6 +82,50 @@
           </div>
         </div>
       </main>
+
+      <section id="minmax-temp" class="max-w-6xl flex flex-col md:flex-row gap-6 mx-auto w-full">
+        <div class="mx-auto w-11/12 md:w-full bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_10px_25px_rgba(249,248,246,0.2)] p-6 my-0.5 hover:scale-[1.02] transition-all duration-300">
+          <div class="flex flex-row items-center space-x-2">
+            <i class="bi bi-thermometer-half text-2xl text-red-400"></i>
+
+            <p class="text-xl tracking-wider">Temperature</p>
+          </div>
+
+          <div class="flex flex-row justify-evenly mt-6">
+            <div>
+              <p class="text-lg tracking-wide">Minimum</p>
+    
+              <p id="min-temp" class="text-center text-xl tracking-wider text-red-400 font-bold">--</p>
+            </div>
+            <div>
+              <p class="text-lg tracking-wide">Maximum</p>
+
+              <p id="max-temp" class="text-center text-xl tracking-wider text-red-400 font-bold">--</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mx-auto w-11/12 md:w-full bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_10px_25px_rgba(249,248,246,0.2)] p-6 my-0.5 hover:scale-[1.02] transition-all duration-300">
+          <div class="flex md:flex-row items-center space-x-2">
+            <i class="bi bi-droplet text-2xl text-sky-500"></i>
+
+            <p class="text-xl tracking-wider">Humidity</p>
+          </div>
+
+          <div class="flex flex-row justify-evenly mt-6">
+            <div>
+              <p class="text-lg tracking-wide">Minimum</p>
+    
+              <p id="min-humi" class="text-center text-xl tracking-wider text-sky-500 font-bold">--</p>
+            </div>
+            <div>
+              <p class="text-lg tracking-wide">Maximum</p>
+
+              <p id="max-humi" class="text-center text-xl tracking-wider text-sky-500 font-bold">--</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section id="input-form" class="max-w-6xl mx-auto w-11/12 md:w-full bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_10px_25px_rgba(249,248,246,0.2)] p-6 mt-4 mb-6 hover:scale-[1.02] transition-all duration-300">
         <h2 class="text-2xl text-center font-semibold tracking-wide text-gray-300 mb-6 flex items-center justify-center gap-2">
@@ -140,7 +183,6 @@
         </div>
       </section>
 
-
       <!-- Chart Section -->
       <section class="max-w-6xl mx-auto w-11/12 h-auto md:w-full md:h-auto bg-white/10 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_8px_25px_rgba(255,255,255,0.05)] hover:shadow-[0_10px_25px_rgba(249,248,246,0.5)] p-6 mt-4 mb-6 hover:scale-[1.02] transition-all duration-300">
         <h2 class="text-center text-lg font-semibold tracking-wide text-gray-300 mb-4">
@@ -151,7 +193,7 @@
       </section>
 
       <!-- Footer -->
-      <footer class="text-center md:absolute md:bottom-0 md:left-1/2 md:-translate-x-1/2 py-3 text-gray-500 text-xs md:text-sm">
+      <footer class="text-center py-3 text-gray-500 text-xs md:text-sm">
         <p>© 2025 TempDity | Real-time DHT22 Sensor Data</p>
       </footer>
     </div>
@@ -171,6 +213,15 @@
                   data.temperature ?? "--";
               document.getElementById("humidity").innerText =
                   data.humidity ?? "--";
+
+              document.getElementById("max-temp").innerText =
+                  data.max_temperature ?? "--";
+              document.getElementById("min-temp").innerText =
+                  data.min_temperature ?? "--";
+              document.getElementById("max-humi").innerText =
+                  data.max_humidity ?? "--";
+              document.getElementById("min-humi").innerText =
+                  data.min_humidity ?? "--";
               
               const setNotif = (el, text, color) => {
                 el.innerText = text;
